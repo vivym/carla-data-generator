@@ -102,69 +102,6 @@ class CarlaSimulator:
         )
         self.lidar = lidar
 
-    def setup_lidars_(self):
-        sensor_pose = carla.Transform(
-            carla.Location(x=-47.53, y=-10.46, z=5.56),
-        )
-        infra_sensor_bp = self.world.get_blueprint_library().find("sensor.camera.rgb")
-        infra_sensor = self.world.spawn_actor(
-            infra_sensor_bp,
-            sensor_pose
-        )
-        waypoint = self.world.get_map().get_waypoint(sensor_pose.location)
-        infra_sensor.set_transform(waypoint.transform)
-        print("waypoint", waypoint.transform)
-
-        lidar_bp = self.world.get_blueprint_library().find(
-            "sensor.lidar.ray_cast"
-        )
-        # lidar_bp.set_attribute("dropoff_general_rate", "0.35")
-        # lidar_bp.set_attribute("dropoff_intensity_limit", "0.8")
-        # lidar_bp.set_attribute("dropoff_zero_intensity", "0.4")
-        # lidar_bp.set_attribute("points_per_second", str(self.points_per_cloud * self.fps))
-        # lidar_bp.set_attribute("rotation_frequency", str(self.fps))
-        # lidar_bp.set_attribute("channels", "32.0")
-        # lidar_bp.set_attribute("lower_fov", "-30.0")
-        # lidar_bp.set_attribute("upper_fov", "10.0")
-        # lidar_bp.set_attribute("range", "80.0")
-        # lidar_bp.set_attribute("noise_stddev", "0.02")
-
-        lidar_bp.set_attribute("noise_stddev", "0.01")
-        lidar_bp.set_attribute("upper_fov", "2.0")
-        lidar_bp.set_attribute("lower_fov", "-25.0")
-        lidar_bp.set_attribute("channels", "32")
-        # lidar_bp.set_attribute("atmosphere_attenuation_rate", str(0.05))
-        lidar_bp.set_attribute("range", "80.0")
-        lidar_bp.set_attribute("rotation_frequency", "10")
-        lidar_bp.set_attribute("points_per_second", "500000")
-
-        # lidar_transform = carla.Transform(
-        #     carla.Location(x=-64.0, y=7.0, z=3.74),
-        #     carla.Rotation(pitch=0, yaw=0, roll=0),
-        # )
-
-        lidar_transform = carla.Transform(
-            carla.Location(x=0, y=0, z=5.5),
-            carla.Rotation(yaw=0, pitch=0),
-        )
-        # add sensor
-        lidar = self.world.spawn_actor(
-            lidar_bp, lidar_transform,
-            attach_to=infra_sensor
-        )
-
-        pose = lidar.get_transform()
-        print("pose", pose)
-
-        # lidar = self.world.spawn_actor(
-        #     lidar_bp, lidar_transform
-        # )
-        weak_self = weakref.ref(self)
-        lidar.listen(
-            lambda sensor_data: self.lidar_sensor_callback(weak_self, sensor_data)
-        )
-        self.lidar = lidar
-
     @staticmethod
     def lidar_sensor_callback(weak_self, sensor_data):
         self = weak_self()
