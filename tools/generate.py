@@ -2,19 +2,15 @@ import argparse
 import time
 from pathlib import Path
 
-from carla_data_generator.simulator1 import CarlaSimulator
+from carla_data_generator.simulator1_yaml import CarlaSimulator
 
 
 def main():
     parser = argparse.ArgumentParser()
 
-    root_path = Path("data")
-    velodyne_path = root_path / "velodyne"
-    labels_path = root_path / "labels"
-    if not velodyne_path.exists():
-        velodyne_path.mkdir(parents=True)
-    if not labels_path.exists():
-        labels_path.mkdir(parents=True)
+    root_path = Path("data/carla_raw")
+    if not root_path.exists():
+        root_path.mkdir(parents=True)
 
     simulator = CarlaSimulator()
     simulator.setup_vehicles()
